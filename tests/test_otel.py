@@ -6,6 +6,7 @@ import pytest
 
 from mimirlog import current_span_id
 from mimirlog.otel import format_span, load_module
+from mimirlog.spanproto import _Span, _Trace, hex_span_id
 
 
 def test_span_id_without_otel() -> None:
@@ -54,6 +55,22 @@ def test_format_span_rejects_an_invalid_context() -> None:
 
     assert format_span(Invalid()) is None
     assert format_span(MissingId()) is None
+
+    class NotValid:
+        """Hold a test double."""
+
+        is_valid = False
+        span_id = 1
+
+    class MissingSpan:
+        """Hold a test double."""
+
+        is_valid = True
+
+    assert hex_span_id(NotValid()) is None
+    assert hex_span_id(MissingSpan()) is None
+    assert _Trace.get_current_span(_Trace) is None
+    assert _Span.get_span_context(_Span) is None
 
 
 def test_load_module_uses_an_injected_importer() -> None:

@@ -4,7 +4,7 @@ milestones:
   - name: Phase 1 — Foundation
     epics:
       - id: LOG-001
-        status: open
+        status: done
         title: Ship structured logging
         overview:
           problem: >-
@@ -26,7 +26,7 @@ milestones:
           - PY-TEST-002
         tasks:
           - id: LOG-001-T1
-            status: open
+            status: done
             title: Implement the logger and the quality caller
             instructions:
               files:
@@ -49,7 +49,7 @@ milestones:
             guardrail_refs:
               - PY-TEST-002
           - id: LOG-001-T3
-            status: open
+            status: done
             title: Run the test job on Python 3.14
             instructions:
               files:
@@ -59,7 +59,7 @@ milestones:
             guardrail_refs:
               - PY-TEST-002
           - id: LOG-001-T4
-            status: open
+            status: done
             title: Add a repo-level container CI script
             instructions:
               files:

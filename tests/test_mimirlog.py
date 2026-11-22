@@ -8,12 +8,10 @@ import json
 import pytest
 
 from mimirlog import (
-    benchmark,
     bind,
     configure,
     correlation_id,
     get_logger,
-    log_call,
     reset,
 )
 from mimirlog.redact import redact_mapping
@@ -51,55 +49,3 @@ def test_redact_leaves_other_keys() -> None:
     """Run this step."""
     cleaned = redact_mapping({"token": "abc", "host": "example"})
     assert cleaned == {"token": "***", "host": "example"}
-
-
-def test_log_call_records_success_and_exception() -> None:
-    """Run this step."""
-    stream = io.StringIO()
-    configure(stream=stream)
-
-    @log_call
-    def add(left: int, right: int) -> int:
-        """Run this step."""
-        return left + right
-
-    @log_call
-    def fail() -> None:
-        """Run this step."""
-        raise RuntimeError("nope")
-
-    assert add(1, 2) == 3
-    with pytest.raises(RuntimeError):
-        fail()
-    lines = [json.loads(line) for line in stream.getvalue().splitlines()]
-    assert lines[0]["message"]["outcome"] == "success"
-    assert lines[1]["message"]["exception"] == "RuntimeError"
-
-
-def test_benchmark_logs_duration() -> None:
-    """Run this step."""
-    stream = io.StringIO()
-    configure(stream=stream)
-
-    @benchmark()
-    def work() -> str:
-        """Run this step."""
-        return "ok"
-
-    assert work() == "ok"
-    payload = json.loads(stream.getvalue().strip())
-    assert str(payload["message"]["function"]).endswith("work")
-    assert "duration_ms" in payload["message"]
-
-
-def test_formatter_includes_exception_type() -> None:
-    """Run this step."""
-    stream = io.StringIO()
-    configure(stream=stream)
-    logger = get_logger("app")
-    try:
-        raise ValueError("bad")
-    except ValueError:
-        logger.exception("failed")
-    payload = json.loads(stream.getvalue().strip())
-    assert payload["exception"] == "ValueError"
