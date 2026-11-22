@@ -3,8 +3,8 @@
 ## Identity
 
 `mimirlog` is structured logging. Python 3.13 and 3.14. Public
-repository `NjordLabs/mimirlog`. `v0.2.0` is the GitHub Release:
-https://github.com/NjordLabs/mimirlog/releases/tag/v0.2.0
+repository `NjordLabs/mimirlog`. [`v0.2.0`](https://github.com/NjordLabs/mimirlog/releases/tag/v0.2.0)
+is the GitHub Release.
 The wheel sha256 is
 `bbf5794ca4182ed638549fc139fa4cc0a10c9d6be0926108725e2620984430b4`.
 pymjolnir is pinned to the v0.1.1 release wheel.
