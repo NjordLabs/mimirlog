@@ -2,8 +2,12 @@
 
 ## Identity
 
-`mimirlog` is structured logging. Python 3.13. Public repository
-`NjordLabs/mimirlog`.
+`mimirlog` is structured logging. Python 3.13 and 3.14. Public
+repository `NjordLabs/mimirlog`. `v0.2.0` is the GitHub Release:
+https://github.com/NjordLabs/mimirlog/releases/tag/v0.2.0
+The wheel sha256 is
+`bbf5794ca4182ed638549fc139fa4cc0a10c9d6be0926108725e2620984430b4`.
+pymjolnir is pinned to the v0.1.1 release wheel.
 
 ## Scope
 
@@ -32,9 +36,7 @@ until `GHCR_READ_TOKEN` on this repository can read it.
 
 ## Suggested next work
 
-PyPI publish (LOG-001-T2) stays open. The quality caller will test
-3.13 and 3.14. The pymjolnir pin moves to the release wheel when
-0.1.1 exists.
+PyPI publish (LOG-001-T2) stays open.
 
 ## Recent history
 
@@ -42,6 +44,8 @@ PyPI publish (LOG-001-T2) stays open. The quality caller will test
 - chore(ci): skip secret jobs for dependabot pull requests
 - feat(log): redact nested secrets and await decorated calls
 - fix(quality): split span tests and hide untyped span lookups from mypy
-- docs(readme): install the v0.1.0 release wheel
+- docs(readme): install the v0.2.0 release wheel
+- build(deps): pin pymjolnir to the v0.1.1 release wheel
+- release: tag v0.2.0
 
 *Last updated: 2026-11-22.*
