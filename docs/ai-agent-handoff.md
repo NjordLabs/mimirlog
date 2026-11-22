@@ -17,8 +17,10 @@ sh scripts/check-ci-local.sh
 sh scripts/check-ci-docker.sh
 ```
 
-`check-ci-docker.sh` runs the local script in `ghcr.io/pirlruc/ci-python`
-(digest-pinned). The image is private.
+`check-ci-docker.sh` runs the same gates in `ghcr.io/pirlruc/ci-python`
+(digest-pinned). That image has no `uv`, so the script installs this
+package inside the container and leaves the checkout read-only. The
+image is private.
 
 ## Known pitfalls
 
@@ -36,6 +38,7 @@ PyPI publish (LOG-001-T2) stays open. The quality caller will test
 
 ## Recent history
 
+- fix(ci): run quality gates inside ci-python without uv
 - chore(ci): skip secret jobs for dependabot pull requests
 - feat(log): redact nested secrets and await decorated calls
 - fix(quality): split span tests and hide untyped span lookups from mypy
