@@ -1,13 +1,13 @@
 # mimirlog
 
 JSON logging for Python 3.13 services. Each record is one JSON line.
-Mapping keys named `password`, `token`, `secret`, or `authorization`
-are written as `***`. A correlation id comes from a context variable.
+Secret-like mapping keys, including nested mappings and lists, are
+written as `***`. A correlation id comes from a context variable.
 
 The package is not on PyPI. Install the wheel from the GitHub Release:
 
 ```bash
-pip install https://github.com/NjordLabs/mimirlog/releases/download/v0.1.0/mimirlog-0.1.0-py3-none-any.whl
+pip install https://github.com/NjordLabs/mimirlog/releases/download/v0.2.0/mimirlog-0.2.0-py3-none-any.whl
 ```
 
 Requires Python 3.13. Named loggers are cached with
