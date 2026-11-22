@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+from typing import cast
 
 from mimirlog.context import correlation_id
 from mimirlog.otel import current_span_id
@@ -19,7 +20,8 @@ def _scalar(value: object) -> bool:
 
 def _extras(record: logging.LogRecord) -> dict[str, object]:
     extras: dict[str, object] = {}
-    for key, value in record.__dict__.items():
+    fields = cast("dict[str, object]", vars(record))
+    for key, value in fields.items():
         if key in _RESERVED or not _scalar(value):
             continue
         extras[key] = value

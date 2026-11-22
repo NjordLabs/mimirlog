@@ -194,7 +194,7 @@ def test_filter_redacts_mapping_args_and_keeps_strings() -> None:
     assert bare.args is None
 
 
-def test_formatter_keeps_safe_extras_span_and_stringifies(monkeypatch: pytest.MonkeyPatch) -> None:
+def _configured(monkeypatch: pytest.MonkeyPatch) -> tuple[logging.Logger, io.StringIO]:
     """Run this step."""
     stream = io.StringIO()
     configure(stream=stream)
@@ -204,7 +204,12 @@ def test_formatter_keeps_safe_extras_span_and_stringifies(monkeypatch: pytest.Mo
         return "span-1"
 
     monkeypatch.setattr("mimirlog.format.current_span_id", span)
-    logger = get_logger("app")
+    return get_logger("app"), stream
+
+
+def test_formatter_keeps_safe_extras_and_span(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Run this step."""
+    logger, stream = _configured(monkeypatch)
     logger.info(
         "ready",
         extra={
@@ -217,19 +222,25 @@ def test_formatter_keeps_safe_extras_span_and_stringifies(monkeypatch: pytest.Mo
             "request_id": "r",
         },
     )
+    line = json.loads(stream.getvalue())
+    assert line["span_id"] == "span-1"
+    assert line["request_id"] == "r"
+    assert line["count"] == 2
+    assert line["correlation_id"] is None
+    assert line["ratio"] == 0.5
+    assert line["flag"] is True
+    assert line["missing"] is None
+    assert "blob" not in line
+    assert "filename" not in line
+
+
+def test_formatter_stringifies_a_mapping_message(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Run this step."""
+    logger, stream = _configured(monkeypatch)
     logger.info({"event": "ready", "tags": {"a"}})
-    lines = [json.loads(line) for line in stream.getvalue().splitlines()]
-    assert lines[0]["span_id"] == "span-1"
-    assert lines[0]["request_id"] == "r"
-    assert lines[0]["count"] == 2
-    assert lines[0]["correlation_id"] is None
-    assert lines[0]["ratio"] == 0.5
-    assert lines[0]["flag"] is True
-    assert lines[0]["missing"] is None
-    assert "blob" not in lines[0]
-    assert "filename" not in lines[0]
-    assert lines[1]["message"]["event"] == "ready"
-    assert "a" in lines[1]["message"]["tags"]
+    message = json.loads(stream.getvalue())["message"]
+    assert message["event"] == "ready"
+    assert "a" in message["tags"]
 
 
 def test_configure_defaults_to_stderr_and_keeps_foreign_handlers() -> None:

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Protocol, cast, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 
 @runtime_checkable
@@ -48,10 +48,12 @@ def read_span(module: object) -> object | None:
     Returns:
         The span, or ``None`` when the module cannot produce one.
     """
-    getter = getattr(module, "get_current_span", None)
-    if not callable(getter):
+    if not isinstance(module, _Trace):
         return None
-    return cast(object, getter())
+    try:
+        return module.get_current_span()
+    except TypeError:
+        return None
 
 
 def hex_span_id(context: object) -> str | None:
@@ -63,11 +65,10 @@ def hex_span_id(context: object) -> str | None:
     Returns:
         A 16-digit hex span id, or ``None``.
     """
-    if not hasattr(context, "is_valid") or not hasattr(context, "span_id"):
+    if not isinstance(context, _SpanContext):
         return None
-    if getattr(context, "is_valid", False) is not True:
+    if context.is_valid is not True:
         return None
-    span_id = getattr(context, "span_id", None)
-    if not isinstance(span_id, int):
+    if not isinstance(context.span_id, int):
         return None
-    return format(span_id, "016x")
+    return format(context.span_id, "016x")
