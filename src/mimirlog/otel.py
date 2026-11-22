@@ -10,7 +10,8 @@ import importlib
 import importlib.util
 from collections.abc import Callable
 from types import ModuleType
-from typing import cast
+
+from mimirlog.spanproto import _Span, _Trace, hex_span_id, read_span
 
 
 def current_span_id() -> str | None:
@@ -20,19 +21,15 @@ def current_span_id() -> str | None:
         A hex span id, or ``None`` when there is no current span.
     """
     module = load_module("opentelemetry.trace")
-    if module is None:
+    if not isinstance(module, _Trace):
         return None
-    get_current = getattr(module, "get_current_span", None)
-    if not callable(get_current):
-        return None
-    caller: Callable[[], object] = cast(Callable[[], object], get_current)
-    return format_span(caller())  # pylint: disable=not-callable
+    return format_span(read_span(module))
 
 
 def load_module(
     name: str,
-    finder: Callable[[str], object | None] = importlib.util.find_spec,
-    importer: Callable[[str], ModuleType] = importlib.import_module,
+    finder: Callable[[str], object | None] | None = None,
+    importer: Callable[[str], ModuleType] | None = None,
 ) -> ModuleType | None:
     """Import ``name`` when it is installed.
 
@@ -44,13 +41,15 @@ def load_module(
     Returns:
         The imported module, or ``None``.
     """
+    chosen_finder = importlib.util.find_spec if finder is None else finder
+    chosen_importer = importlib.import_module if importer is None else importer
     try:
-        spec = finder(name)
+        spec = chosen_finder(name)
     except ModuleNotFoundError:
         return None
     if spec is None:
         return None
-    return importer(name)
+    return chosen_importer(name)
 
 
 def format_span(span: object) -> str | None:
@@ -62,13 +61,6 @@ def format_span(span: object) -> str | None:
     Returns:
         A 16-digit hex span id, or ``None`` when the span is invalid.
     """
-    get_context = getattr(span, "get_span_context", None)
-    if get_context is None:
+    if not isinstance(span, _Span):
         return None
-    context = get_context()
-    if not getattr(context, "is_valid", False):
-        return None
-    span_id = getattr(context, "span_id", None)
-    if not isinstance(span_id, int):
-        return None
-    return format(span_id, "016x")
+    return hex_span_id(span.get_span_context())

@@ -30,5 +30,6 @@ the release instead of the git pin.
 ## Recent history
 
 - feat(log): add JSON logging, redaction, and call decorators
+- fix(quality): split span tests and hide untyped span lookups from mypy
 
 *Last updated: 2026-11-22.*

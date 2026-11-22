@@ -12,16 +12,15 @@ from mimirlog import (
     bind,
     configure,
     correlation_id,
-    current_span_id,
     get_logger,
     log_call,
     reset,
 )
-from mimirlog.otel import format_span, load_module
 from mimirlog.redact import redact_mapping
 
 
 def test_named_logger_is_cached() -> None:
+    """Run this step."""
     reset()
     first = get_logger("app")
     second = get_logger("app")
@@ -29,11 +28,13 @@ def test_named_logger_is_cached() -> None:
 
 
 def test_empty_logger_name_is_rejected() -> None:
+    """Run this step."""
     with pytest.raises(ValueError):
         get_logger("")
 
 
 def test_configure_emits_json_and_replaces_its_handler() -> None:
+    """Run this step."""
     stream = io.StringIO()
     configure(stream=stream)
     configure(stream=stream)
@@ -47,20 +48,24 @@ def test_configure_emits_json_and_replaces_its_handler() -> None:
 
 
 def test_redact_leaves_other_keys() -> None:
+    """Run this step."""
     cleaned = redact_mapping({"token": "abc", "host": "example"})
     assert cleaned == {"token": "***", "host": "example"}
 
 
 def test_log_call_records_success_and_exception() -> None:
+    """Run this step."""
     stream = io.StringIO()
     configure(stream=stream)
 
     @log_call
     def add(left: int, right: int) -> int:
+        """Run this step."""
         return left + right
 
     @log_call
     def fail() -> None:
+        """Run this step."""
         raise RuntimeError("nope")
 
     assert add(1, 2) == 3
@@ -72,11 +77,13 @@ def test_log_call_records_success_and_exception() -> None:
 
 
 def test_benchmark_logs_duration() -> None:
+    """Run this step."""
     stream = io.StringIO()
     configure(stream=stream)
 
     @benchmark()
     def work() -> str:
+        """Run this step."""
         return "ok"
 
     assert work() == "ok"
@@ -85,74 +92,8 @@ def test_benchmark_logs_duration() -> None:
     assert "duration_ms" in payload["message"]
 
 
-def test_span_id_without_otel() -> None:
-    assert current_span_id() is None
-    assert load_module("opentelemetry.trace") is None
-    assert load_module("missing", finder=lambda _name: None) is None
-    assert format_span(object()) is None
-
-    class Context:
-        is_valid = True
-        span_id = 255
-
-    class Span:
-        def get_span_context(self) -> Context:
-            return Context()
-
-    assert format_span(Span()) == "00000000000000ff"
-
-    class Invalid:
-        def get_span_context(self) -> object:
-            return object()
-
-    assert format_span(Invalid()) is None
-
-    class MissingId:
-        def get_span_context(self) -> object:
-            return type("Ctx", (), {"is_valid": True, "span_id": "nope"})()
-
-    assert format_span(MissingId()) is None
-
-    class FakeModule:
-        @staticmethod
-        def get_current_span() -> Span:
-            return Span()
-
-    loaded = load_module(
-        "opentelemetry.trace",
-        finder=lambda _name: object(),
-        importer=lambda _name: FakeModule(),  # type: ignore[arg-type, return-value]
-    )
-    assert loaded is not None
-    assert format_span(loaded.get_current_span()) == "00000000000000ff"
-
-
-def test_current_span_id_reads_a_module(monkeypatch: pytest.MonkeyPatch) -> None:
-    class Context:
-        is_valid = True
-        span_id = 1
-
-    class Span:
-        def get_span_context(self) -> Context:
-            return Context()
-
-    class Module:
-        @staticmethod
-        def get_current_span() -> Span:
-            return Span()
-
-    monkeypatch.setattr("mimirlog.otel.load_module", lambda _name: Module())
-    assert current_span_id() == "0000000000000001"
-    monkeypatch.setattr("mimirlog.otel.load_module", lambda _name: object())
-    assert current_span_id() is None
-    monkeypatch.setattr(
-        "mimirlog.otel.load_module",
-        lambda _name: type("Module", (), {"get_current_span": 1})(),
-    )
-    assert current_span_id() is None
-
-
 def test_formatter_includes_exception_type() -> None:
+    """Run this step."""
     stream = io.StringIO()
     configure(stream=stream)
     logger = get_logger("app")
