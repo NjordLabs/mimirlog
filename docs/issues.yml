@@ -49,7 +49,7 @@ milestones:
             guardrail_refs:
               - PY-TEST-002
           - id: LOG-001-T3
-            status: open
+            status: done
             title: Run the test job on Python 3.14
             instructions:
               files:
