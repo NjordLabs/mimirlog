@@ -14,20 +14,30 @@ loggers use pymjolnir's multiton, pinned in `pyproject.toml`.
 
 ```bash
 sh scripts/check-ci-local.sh
+sh scripts/check-ci-docker.sh
 ```
+
+`check-ci-docker.sh` runs the local script in `ghcr.io/pirlruc/ci-python`
+(digest-pinned). The image is private.
 
 ## Known pitfalls
 
-`v0.1.0` is released. Quality on that pull request passed with
-`GHCR_READ_TOKEN` able to pull the private lint image.
+GitHub-hosted quality jobs pull a private image. The job stays red
+until `GHCR_READ_TOKEN` on this repository can read it.
+
+`radon` and `pip-audit` are not project dependencies, so
+`scripts/check-ci-local.sh` does not invoke them.
 
 ## Suggested next work
 
-PyPI publish stays open. The GitHub Release is `v0.1.0`.
+PyPI publish (LOG-001-T2) stays open. The quality caller will test
+3.13 and 3.14. The pymjolnir pin moves to the release wheel when
+0.1.1 exists.
 
 ## Recent history
 
-- feat(log): add JSON logging, redaction, and call decorators
+- chore(ci): skip secret jobs for dependabot pull requests
+- feat(log): redact nested secrets and await decorated calls
 - fix(quality): split span tests and hide untyped span lookups from mypy
 - docs(readme): install the v0.1.0 release wheel
 
