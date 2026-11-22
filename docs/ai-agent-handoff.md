@@ -18,18 +18,17 @@ sh scripts/check-ci-local.sh
 
 ## Known pitfalls
 
-GitHub-hosted quality jobs pull a private `ci-lint` image. The job
-stays red until `GHCR_READ_TOKEN` on this repository can read
-`ghcr.io/pirlruc/ci-lint`.
+`v0.1.0` is released. Quality on that pull request passed with
+`GHCR_READ_TOKEN` able to pull the private lint image.
 
 ## Suggested next work
 
-Publish 0.1.0 after the quality job is green, then point nodeio at
-the release instead of the git pin.
+PyPI publish stays open. The GitHub Release is `v0.1.0`.
 
 ## Recent history
 
 - feat(log): add JSON logging, redaction, and call decorators
 - fix(quality): split span tests and hide untyped span lookups from mypy
+- docs(readme): install from the v0.1.0 git tag
 
 *Last updated: 2026-11-22.*
