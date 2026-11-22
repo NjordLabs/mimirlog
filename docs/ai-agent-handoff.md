@@ -29,6 +29,6 @@ PyPI publish stays open. The GitHub Release is `v0.1.0`.
 
 - feat(log): add JSON logging, redaction, and call decorators
 - fix(quality): split span tests and hide untyped span lookups from mypy
-- docs(readme): install from the v0.1.0 git tag
+- docs(readme): install the v0.1.0 release wheel
 
 *Last updated: 2026-11-22.*
