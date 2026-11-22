@@ -1,11 +1,8 @@
-"""Protocols for an optional OpenTelemetry span.
-
-A sibling ``spanproto.pyi`` is what type checkers read.
-"""
+"""Protocols for an optional OpenTelemetry span."""
 
 from __future__ import annotations
 
-from typing import Protocol, runtime_checkable
+from typing import Protocol, cast, runtime_checkable
 
 
 @runtime_checkable
@@ -54,7 +51,7 @@ def read_span(module: object) -> object | None:
     getter = getattr(module, "get_current_span", None)
     if not callable(getter):
         return None
-    return getter()
+    return cast(object, getter())
 
 
 def hex_span_id(context: object) -> str | None:

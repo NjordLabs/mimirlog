@@ -4,7 +4,7 @@ requires = ["setuptools>=82.0.1", "wheel>=0.47.0"]
 
 [project]
 name = "mimirlog"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
   "pymjolnir @ https://github.com/NjordLabs/pymjolnir/archive/aa9a2ee85fafd2102bfdb0a5b3bb97d194715d20.tar.gz",
 ]
@@ -69,7 +69,7 @@ namespace_packages = true
 no_implicit_optional = true
 python_version = "3.13"
 show_error_codes = true
-strict = false
+strict = true
 warn_return_any = true
 warn_unused_configs = true
 

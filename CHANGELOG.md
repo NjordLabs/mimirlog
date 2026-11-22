@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0 - 2026-11-22
+
+- Nested redaction for a wider set of secret keys, including mapping arguments.
+- JSON records keep JSON-safe extras and the current span id, without traceback text.
+- `log_call` and `benchmark` keep callable metadata and await coroutine functions.
+- `configure` replaces its handlers under a lock.
+
 ## 0.1.0 - 2026-11-22
 
 - JSON formatter, redaction filter, and correlation ids.
