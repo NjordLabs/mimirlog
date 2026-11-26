@@ -70,15 +70,30 @@ def _redact_mapping(
     return cleaned
 
 
+def _is_mapping(value: object) -> bool:
+    return isinstance(value, Mapping)
+
+
+def _is_list(value: object) -> bool:
+    return isinstance(value, list)
+
+
+def _is_tuple(value: object) -> bool:
+    return isinstance(value, tuple)
+
+
 def _redact_value(value: object, depth: int, seen: set[int]) -> object:
     if depth > _MAX_DEPTH:
         return "***"
-    if isinstance(value, Mapping):
-        return _walk(value, seen, lambda: _redact_mapping(value, depth, seen))
-    if isinstance(value, list):
-        return _walk(value, seen, lambda: _copy_list(value, depth, seen))
-    if isinstance(value, tuple):
-        return _walk(value, seen, lambda: _copy_tuple(value, depth, seen))
+    if _is_mapping(value):
+        mapped = cast("Mapping[object, object]", value)
+        return _walk(value, seen, lambda: _redact_mapping(mapped, depth, seen))
+    if _is_list(value):
+        items = cast("list[object]", value)
+        return _walk(value, seen, lambda: _copy_list(items, depth, seen))
+    if _is_tuple(value):
+        pair = cast("tuple[object, ...]", value)
+        return _walk(value, seen, lambda: _copy_tuple(pair, depth, seen))
     return value
 
 
@@ -102,8 +117,8 @@ def _walk(value: object, seen: set[int], copy: Callable[[], object]) -> object:
 
 
 def _redact_args(args: _LogArgs) -> _LogArgs:
-    if isinstance(args, Mapping):
-        return redact_mapping(args)
+    if _is_mapping(args):
+        return redact_mapping(cast("Mapping[str, object]", args))
     if isinstance(args, tuple):
         return tuple(_redact_value(item, 0, set()) for item in args)
     return args
@@ -130,11 +145,15 @@ class RedactionFilter(logging.Filter):
         return True
 
 
+def _record_fields(record: logging.LogRecord) -> dict[str, object]:
+    return cast("dict[str, object]", record.__dict__)
+
+
 def _redact_attributes(record: logging.LogRecord) -> None:
-    for key, value in list(vars(record).items()):
+    for key, value in list(_record_fields(record).items()):
         if key in {"args", "msg"}:
             continue
         if is_secret_key(key):
             setattr(record, key, "***")
-        elif isinstance(value, (Mapping, list, tuple)):
+        elif _is_mapping(value) or _is_list(value) or _is_tuple(value):
             setattr(record, key, _redact_value(value, 0, set()))
