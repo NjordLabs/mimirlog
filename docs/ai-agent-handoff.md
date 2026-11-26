@@ -3,12 +3,10 @@
 ## Identity
 
 `mimirlog` is structured logging. Python 3.13 and 3.14. Public
-repository `NjordLabs/mimirlog`. [`v0.2.0`](https://github.com/NjordLabs/mimirlog/releases/tag/v0.2.0)
-is the GitHub Release.
-The wheel sha256 is
-`bbf5794ca4182ed638549fc139fa4cc0a10c9d6be0926108725e2620984430b4`.
-pymjolnir is pinned to the v0.1.1 release wheel.
-Pins: guardrails `1.17.1` (`8508e936`), scaffold `1.14.3` (`1fca8a3b`), pydevops `3.11.1` (`efef9824`), commondevops `v6.12.0` (`ff65e7ef`).
+repository `NjordLabs/mimirlog`. [`v0.2.1`](https://github.com/NjordLabs/mimirlog/releases/tag/v0.2.1)
+is the GitHub Release. The wheel sha256 is written by the release workflow.
+pymjolnir is pinned to the v0.1.2 release wheel.
+Pins: guardrails `1.17.1` (`8508e936`), scaffold `1.14.3` (`1fca8a3b`), pydevops `3.11.1` (`efef9824`), release workflow `3.11.2` (`fbb04bf`), commondevops `v6.12.0` (`ff65e7ef`).
 
 ## Scope
 
@@ -49,4 +47,4 @@ PyPI publish (LOG-001-T2) stays open.
 - build(deps): pin pymjolnir to the v0.1.1 release wheel
 - release: tag v0.2.0
 
-*Last updated: 2026-11-22.*
+*Last updated: 2026-11-26.*
