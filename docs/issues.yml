@@ -69,7 +69,7 @@ milestones:
             guardrail_refs:
               - PY-TEST-002
       - id: REDACT-001
-        status: open
+        status: done
         title: Redact secrets that the filter currently skips
         overview:
           problem: >-
@@ -91,7 +91,7 @@ milestones:
           - APP-LOG-001
         tasks:
           - id: REDACT-001-T1
-            status: open
+            status: done
             title: Walk the values the filter skipped
             instructions:
               files:

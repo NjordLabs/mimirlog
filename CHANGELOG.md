@@ -2,8 +2,11 @@
 
 ## Unreleased
 
+## 0.2.1 - 2026-11-26
+
 - Secret-named extras, including `password`, are redacted. Mapping values, tuples, and other mappings are walked, and a cycle stops at `***`.
 - A decorator around a function that returns a coroutine logs the outcome after that coroutine finishes.
+- The pymjolnir wheel is 0.1.2.
 
 ## 0.2.0 - 2026-11-22
 
