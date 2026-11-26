@@ -7,7 +7,7 @@ written as `***`. A correlation id comes from a context variable.
 The package is not on PyPI. Install the wheel from the GitHub Release:
 
 ```bash
-pip install https://github.com/NjordLabs/mimirlog/releases/download/v0.2.1/mimirlog-0.2.1-py3-none-any.whl
+pip install "https://github.com/NjordLabs/mimirlog/releases/download/v0.2.1/mimirlog-0.2.1-py3-none-any.whl#sha256=0e1ea1a0aed6cacab55d91da68511231c22232ec1ed569a2122e8f0b5c78f4ab"
 ```
 
 Requires Python 3.13. Named loggers are cached with

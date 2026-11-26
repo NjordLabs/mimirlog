@@ -4,7 +4,9 @@
 
 `mimirlog` is structured logging. Python 3.13 and 3.14. Public
 repository `NjordLabs/mimirlog`. [`v0.2.1`](https://github.com/NjordLabs/mimirlog/releases/tag/v0.2.1)
-is the GitHub Release. The wheel sha256 is written by the release workflow.
+is the GitHub Release.
+The wheel sha256 is
+`0e1ea1a0aed6cacab55d91da68511231c22232ec1ed569a2122e8f0b5c78f4ab`.
 pymjolnir is pinned to the v0.1.2 release wheel.
 Pins: guardrails `1.17.1` (`8508e936`), scaffold `1.14.3` (`1fca8a3b`), pydevops `3.11.1` (`efef9824`), release workflow `3.11.2` (`fbb04bf`), commondevops `v6.12.0` (`ff65e7ef`).
 
