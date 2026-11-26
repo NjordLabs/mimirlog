@@ -61,6 +61,15 @@ def test_formatter_keeps_scalars_and_drops_objects(monkeypatch: pytest.MonkeyPat
     assert "filename" not in line
 
 
+def test_formatter_redacts_secret_extras(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Run this step."""
+    logger, stream = _configured(monkeypatch)
+    logger.info("ready", extra={"password": "hunter2", "note": "ok"})
+    line = json.loads(stream.getvalue())
+    assert line["password"] == "***"
+    assert line["note"] == "ok"
+
+
 def test_formatter_stringifies_a_mapping_message(monkeypatch: pytest.MonkeyPatch) -> None:
     """Run this step."""
     logger, stream = _configured(monkeypatch)

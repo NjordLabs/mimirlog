@@ -57,8 +57,26 @@ def _protect(
     except Exception as exc:
         _finish(logger, function, started, exc, outcome)
         raise
+    if inspect.iscoroutine(result):
+        return _await_returned(result, logger, function, started, outcome)
     _finish(logger, function, started, None, outcome)
     return result
+
+
+async def _await_returned(
+    result: object,
+    logger: logging.Logger,
+    function: str,
+    started: float,
+    outcome: _Outcome,
+) -> object:
+    try:
+        value = await cast(Awaitable[object], result)
+    except Exception as exc:
+        _finish(logger, function, started, exc, outcome)
+        raise
+    _finish(logger, function, started, None, outcome)
+    return value
 
 
 def _wrap(

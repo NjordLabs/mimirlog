@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import io
 import json
 import logging
@@ -34,6 +35,39 @@ def test_log_call_records_success_and_exception() -> None:
     lines = [json.loads(line) for line in stream.getvalue().splitlines()]
     assert lines[0]["message"]["outcome"] == "success"
     assert lines[1]["message"]["exception"] == "RuntimeError"
+
+
+def test_log_call_waits_for_a_returned_coroutine() -> None:
+    """Run this step."""
+    stream = io.StringIO()
+    configure(stream=stream)
+
+    @log_call
+    def later() -> object:
+        """Run this step."""
+
+        async def inner() -> str:
+            return "done"
+
+        return inner()
+
+    assert asyncio.run(later()) == "done"
+    lines = [json.loads(line) for line in stream.getvalue().splitlines()]
+    assert lines[0]["message"]["outcome"] == "success"
+
+    @log_call
+    def broken() -> object:
+        """Run this step."""
+
+        async def inner() -> str:
+            raise RuntimeError("late")
+
+        return inner()
+
+    with pytest.raises(RuntimeError):
+        asyncio.run(broken())
+    failed = [json.loads(line) for line in stream.getvalue().splitlines()][-1]
+    assert failed["message"]["exception"] == "RuntimeError"
 
 
 def test_benchmark_logs_duration() -> None:
