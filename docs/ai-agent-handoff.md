@@ -8,6 +8,7 @@ is the GitHub Release.
 The wheel sha256 is
 `bbf5794ca4182ed638549fc139fa4cc0a10c9d6be0926108725e2620984430b4`.
 pymjolnir is pinned to the v0.1.1 release wheel.
+Pins: guardrails `1.17.1` (`8508e936`), scaffold `1.14.3` (`1fca8a3b`), pydevops `3.11.1` (`efef9824`), commondevops `v6.12.0` (`ff65e7ef`).
 
 ## Scope
 
@@ -23,8 +24,8 @@ sh scripts/check-ci-docker.sh
 
 `check-ci-docker.sh` runs the same gates in `ghcr.io/pirlruc/ci-python`
 (digest-pinned). That image has no `uv`, so the script installs this
-package inside the container and leaves the checkout read-only. The
-image is private.
+wheel from the checkout with `--require-hashes` and leaves the checkout
+read-only. The image is private.
 
 ## Known pitfalls
 
