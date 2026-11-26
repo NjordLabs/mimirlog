@@ -68,7 +68,40 @@ milestones:
               - sh scripts/check-ci-docker.sh
             guardrail_refs:
               - PY-TEST-002
-
+      - id: REDACT-001
+        status: open
+        title: Redact secrets that the filter currently skips
+        overview:
+          problem: >-
+            A secret passed as a logging extra, a mapping that is not a
+            dict, or a cyclic payload is written in the clear or raises.
+          goal: >-
+            Secret-named extras and nested mappings, tuples, and cycles
+            are redacted, and a returned coroutine is logged when it finishes.
+        decision: >-
+          In the context of structured logs, facing values the filter
+          did not walk, we decided to redact by key name at a bounded
+          depth, to achieve logs that do not contain those secrets,
+          accepting that free text is still not scanned.
+        acceptance_criteria:
+          - extra password is replaced with ***
+          - Tuples, mappings, and cycles are walked without RecursionError
+          - A function that returns a coroutine is logged after it finishes
+        guardrail_refs:
+          - APP-LOG-001
+        tasks:
+          - id: REDACT-001-T1
+            status: open
+            title: Walk the values the filter skipped
+            instructions:
+              files:
+                - src/mimirlog/redact.py
+                - src/mimirlog/format.py
+                - src/mimirlog/decorators.py
+            verification:
+              - sh scripts/check-ci-local.sh
+            guardrail_refs:
+              - APP-LOG-001
       - id: PIN-001
         status: done
         title: Pin guardrails 1.17.1 and hash the container install

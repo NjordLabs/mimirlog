@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Secret-named extras, including `password`, are redacted. Mapping values, tuples, and other mappings are walked, and a cycle stops at `***`.
+- A decorator around a function that returns a coroutine logs the outcome after that coroutine finishes.
+
 ## 0.2.0 - 2026-11-22
 
 - Nested redaction for a wider set of secret keys, including mapping arguments.

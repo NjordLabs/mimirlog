@@ -8,6 +8,7 @@ from typing import cast
 
 from mimirlog.context import correlation_id
 from mimirlog.otel import current_span_id
+from mimirlog.redact import is_secret_key
 
 _RESERVED = frozenset(
     logging.LogRecord("n", logging.INFO, "", 0, "", (), None).__dict__,
@@ -22,7 +23,12 @@ def _extras(record: logging.LogRecord) -> dict[str, object]:
     extras: dict[str, object] = {}
     fields = cast("dict[str, object]", vars(record))
     for key, value in fields.items():
-        if key in _RESERVED or not _scalar(value):
+        if key in _RESERVED:
+            continue
+        if is_secret_key(key):
+            extras[key] = "***"
+            continue
+        if not _scalar(value):
             continue
         extras[key] = value
     return extras
